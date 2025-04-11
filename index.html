@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,102 +7,143 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
       background-color: #f8f8f8;
+      padding: 20px;
     }
-    .product, .register {
-      max-width: 500px;
-      margin: 20px auto;
-      padding: 25px;
+
+    h1, h2 {
+      text-align: center;
+      color: #631b8a;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .product, .register, .cart {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 30px;
       border: 2px solid #631b8a;
       border-radius: 15px;
-      background-color: #fff;
     }
-    select, input, button, #paypal-button-container {
-      margin-top: 15px;
+
+    .product img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    label, select, input, textarea, button {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
       padding: 10px;
-      width: 90%;
       font-size: 16px;
     }
-    textarea {
-      width: 90%;
-      margin-top: 15px;
-      padding: 10px;
-      font-size: 16px;
-      resize: vertical;
+
+    .cart-item {
+      border-top: 1px solid #ccc;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .cart-item-details {
+      flex: 1;
+      padding: 0 10px;
+      text-align: left;
+    }
+
+    .cart-total {
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    .quantity-input {
+      width: 60px;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Welcome to MDM Sport Store</h1>
 
-  <h1>Welcome to MDM Sport Store</h1>
+    <!-- Registration Section -->
+    <div class="register">
+      <h2>Create Account</h2>
+      <input type="text" id="fullName" placeholder="Full Name" />
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="registerUser()">Register</button>
+    </div>
 
-  <!-- Registration -->
-  <div class="register">
-    <h2>Create Account</h2>
-    <input type="text" id="fullName" placeholder="Full Name" required /><br>
-    <input type="email" id="email" placeholder="Email" required /><br>
-    <input type="password" id="password" placeholder="Password" required /><br>
-    <button onclick="registerUser()">Register</button>
-  </div>
+    <!-- Product Selection -->
+    <div class="product">
+      <h2>Select Your Product</h2>
 
-  <!-- Product Selection -->
-  <div class="product">
-    <h2>Select Your Product</h2>
+      <label>Category:</label>
+      <select id="category">
+        <option value="men">Men</option>
+        <option value="women">Women</option>
+        <option value="youth">Youth</option>
+        <option value="girls">Girls</option>
+      </select>
 
-    <label><strong>Category:</strong></label><br>
-    <select id="category">
-      <option value="men">Men</option>
-      <option value="women">Women</option>
-      <option value="youth">Youth</option>
-      <option value="girls">Girls</option>
-    </select>
+      <label>Product:</label>
+      <select id="productType" onchange="updateOptions()">
+        <option value="tshirt">T-Shirt</option>
+        <option value="hoodie">Hoodie</option>
+        <option value="shoes">Shoes</option>
+        <option value="cap">Cap</option>
+      </select>
 
-    <label><strong>Product:</strong></label><br>
-    <select id="productType" onchange="updateOptions()">
-      <option value="tshirt">T-Shirt</option>
-      <option value="hoodie">Hoodie</option>
-      <option value="shoes">Shoes</option>
-      <option value="cap">Cap</option>
-    </select>
+      <div id="productImageContainer">
+        <img id="productImage" src="" alt="Product image" />
+      </div>
 
-    <label><strong>Option:</strong></label><br>
-    <select id="productOption"></select>
+      <label>Option:</label>
+      <select id="productOption"></select>
 
-    <label><strong>Size:</strong></label><br>
-    <select id="productSize">
-      <option value="S">Small (S)</option>
-      <option value="M">Medium (M)</option>
-      <option value="L">Large (L)</option>
-      <option value="XL">X-Large (XL)</option>
-    </select>
+      <label>Size:</label>
+      <select id="productSize">
+        <option value="S">Small (S)</option>
+        <option value="M">Medium (M)</option>
+        <option value="L">Large (L)</option>
+        <option value="XL">X-Large (XL)</option>
+      </select>
 
-    <label><strong>Shipping Address:</strong></label><br>
-    <textarea id="shippingAddress" placeholder="Street, City, Zip, Country" rows="3"></textarea>
+      <label>Shipping Address:</label>
+      <textarea id="shippingAddress" rows="3" placeholder="Street, City, Zip, Country"></textarea>
 
-    <label><strong>Shipping Method:</strong></label><br>
-    <select id="shippingMethod">
-      <option value="Free Shipping">Free Shipping - $0.00</option>
-      <option value="Standard Shipping">Standard Shipping - $4.99</option>
-      <option value="Express Shipping">Express Shipping - $9.99</option>
-    </select>
+      <label>Shipping Method:</label>
+      <select id="shippingMethod">
+        <option value="Free Shipping">Free Shipping - $0.00</option>
+        <option value="Standard Shipping">Standard Shipping - $4.99</option>
+        <option value="Express Shipping">Express Shipping - $9.99</option>
+      </select>
 
-    <label><strong>Payment Method:</strong></label><br>
-    <select id="paymentMethod" onchange="togglePayPal()">
-      <option value="paypal">Pay Now with PayPal</option>
-      <option value="invoice">Pay Later (Invoice)</option>
-    </select>
+      <button onclick="addToCart()">Add to Cart</button>
+    </div>
 
-    <div id="paypal-button-container"></div>
-
-    <div id="invoice-msg" style="display: none; margin-top: 20px; color: green;">
-      You will receive an invoice by email shortly.
+    <!-- Cart Section -->
+    <div class="cart">
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <div class="cart-total" id="cartTotal">Total: $0.00</div>
     </div>
   </div>
-
-  <!-- PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
 
   <script>
     const productOptions = {
@@ -124,9 +165,17 @@
       ]
     };
 
+    const productImages = {
+      tshirt: 'https://via.placeholder.com/300x200?text=T-Shirt',
+      hoodie: 'https://via.placeholder.com/300x200?text=Hoodie',
+      shoes: 'https://via.placeholder.com/300x200?text=Shoes',
+      cap: 'https://via.placeholder.com/300x200?text=Cap'
+    };
+
     function updateOptions() {
       const type = document.getElementById('productType').value;
       const optionSelect = document.getElementById('productOption');
+      const productImage = document.getElementById('productImage');
       optionSelect.innerHTML = '';
       productOptions[type].forEach(opt => {
         const option = document.createElement('option');
@@ -134,20 +183,7 @@
         option.value = opt.value;
         optionSelect.add(option);
       });
-    }
-
-    function togglePayPal() {
-      const method = document.getElementById('paymentMethod').value;
-      const paypalBtn = document.getElementById('paypal-button-container');
-      const invoiceMsg = document.getElementById('invoice-msg');
-
-      if (method === 'paypal') {
-        paypalBtn.style.display = 'block';
-        invoiceMsg.style.display = 'none';
-      } else {
-        paypalBtn.style.display = 'none';
-        invoiceMsg.style.display = 'block';
-      }
+      productImage.src = productImages[type];
     }
 
     function registerUser() {
@@ -156,39 +192,87 @@
       const password = document.getElementById('password').value;
 
       if (name && email && password) {
-        alert("Registration successful for " + name + "!");
-        // Here you'd usually send this data to a backend
+        alert(`Welcome ${name}! Your account is created.`);
       } else {
         alert("Please fill out all fields.");
       }
     }
 
-    // Initialize product options and PayPal button
-    updateOptions();
-    togglePayPal();
+    function addToCart() {
+      const product = document.getElementById('productType').value;
+      const option = document.getElementById('productOption');
+      const price = parseFloat(option.value);
+      const label = option.options[option.selectedIndex].text;
+      const size = document.getElementById('productSize').value;
+      const image = productImages[product];
 
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        const price = parseFloat(document.getElementById('productOption').value);
-        const shipping = document.getElementById('shippingMethod').value.includes('Express') ? 9.99 :
-                         document.getElementById('shippingMethod').value.includes('Standard') ? 4.99 : 0;
-        const total = (price + shipping).toFixed(2);
+      const item = {
+        product,
+        label,
+        size,
+        price,
+        image,
+        quantity: 1
+      };
 
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: total }
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          const name = details.payer.name.given_name;
-          const address = document.getElementById('shippingAddress').value;
-          alert(`Thank you, ${name}! Your order will be shipped to:\n${address}`);
-        });
+      let cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
+      const existingIndex = cart.findIndex(i => i.product === product && i.label === label && i.size === size);
+      if (existingIndex !== -1) {
+        cart[existingIndex].quantity += 1;
+      } else {
+        cart.push(item);
       }
-    }).render('#paypal-button-container');
-  </script>
+      localStorage.setItem('mdmCart', JSON.stringify(cart));
+      renderCart();
+    }
 
+    function removeFromCart(index) {
+      let cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('mdmCart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function updateQuantity(index, qty) {
+      let cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
+      if (qty <= 0) {
+        removeFromCart(index);
+      } else {
+        cart[index].quantity = qty;
+        localStorage.setItem('mdmCart', JSON.stringify(cart));
+        renderCart();
+      }
+    }
+
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
+      const cartItems = document.getElementById('cartItems');
+      const cartTotal = document.getElementById('cartTotal');
+      cartItems.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.image}" />
+          <div class="cart-item-details">
+            <strong>${item.label}</strong><br>
+            Size: ${item.size}<br>
+            $${item.price.toFixed(2)} x 
+            <input class="quantity-input" type="number" min="1" value="${item.quantity}" onchange="updateQuantity(${index}, this.value)">
+          </div>
+          <button onclick="removeFromCart(${index})">Remove</button>
+        `;
+        cartItems.appendChild(div);
+        total += item.price * item.quantity;
+      });
+
+      cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    updateOptions();
+    renderCart();
+  </script>
 </body>
 </html>
