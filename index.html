@@ -21,7 +21,7 @@
       margin: 0 auto;
     }
 
-    .product, .register, .cart {
+    .product, .register, .cart, .sales-history, .about-us {
       background-color: #fff;
       padding: 20px;
       margin-bottom: 30px;
@@ -74,11 +74,50 @@
     .quantity-input {
       width: 60px;
     }
+
+    .payment-section {
+      border-top: 2px solid #631b8a;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .buy-now {
+      background-color: #631b8a;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    .buy-now:hover {
+      background-color: #4b126b;
+    }
+
+    .sales-history ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .sales-history li {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+
+    .about-us {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      margin-top: 40px;
+      border-radius: 15px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Welcome to MDM Sport Store</h1>
+    <h1>Welcome to MDM Sport Store 🏆</h1>
+    <img src="https://i.imgur.com/Fckv11C.jpg" 
+         alt="MDM Sport Logo"
+         style="display: block; margin: 20px auto; max-width: 300px; border-radius: 15px;" />
 
     <!-- Registration Section -->
     <div class="register">
@@ -95,18 +134,18 @@
 
       <label>Category:</label>
       <select id="category">
-        <option value="men">Men</option>
-        <option value="women">Women</option>
-        <option value="youth">Youth</option>
-        <option value="girls">Girls</option>
+        <option value="men">Men 👨</option>
+        <option value="women">Women 👩</option>
+        <option value="youth">Youth 👦</option>
+        <option value="girls">Girls 👧</option>
       </select>
 
       <label>Product:</label>
       <select id="productType" onchange="updateOptions()">
-        <option value="tshirt">T-Shirt</option>
-        <option value="hoodie">Hoodie</option>
-        <option value="shoes">Shoes</option>
-        <option value="cap">Cap</option>
+        <option value="tshirt">T-Shirt 👕</option>
+        <option value="hoodie">Hoodie 🧥</option>
+        <option value="shoes">Shoes 👟</option>
+        <option value="cap">Cap 🧢</option>
       </select>
 
       <div id="productImageContainer">
@@ -139,38 +178,69 @@
 
     <!-- Cart Section -->
     <div class="cart">
-      <h2>Your Cart</h2>
+      <h2>Your Cart 🛒</h2>
       <div id="cartItems"></div>
       <div class="cart-total" id="cartTotal">Total: $0.00</div>
+
+      <h3>Have a Discount Code? 🎉</h3>
+      <input type="text" id="discountCode" placeholder="Enter code e.g. MDM10" />
+      <button onclick="applyDiscount()">Apply Discount</button>
+      <div class="cart-total" id="finalTotal" style="color: green; font-weight: bold;"></div>
+
+      <div class="payment-section">
+        <label>Payment Method:</label>
+        <select id="paymentMethod">
+          <option value="paypal">PayPal 💳</option>
+          <option value="creditcard">Credit Card 💳</option>
+        </select>
+
+        <button class="buy-now" onclick="buyNow()">Buy Now</button>
+      </div>
     </div>
+
+    <!-- Sales History Section -->
+    <div class="sales-history">
+      <h2>Sales History 📈</h2>
+      <ul id="salesHistoryList"></ul>
+    </div>
+
+    <!-- About Us Section -->
+    <div class="about-us">
+      <h2>About MDM Sport</h2>
+      <p>MDM Sport is a top-quality sports apparel brand providing high-performance gear for athletes of all ages. We specialize in premium materials and stylish designs to help you achieve your best performance.</p>
+    </div>
+
   </div>
 
   <script>
     const productOptions = {
       tshirt: [
-        { label: 'Small - $19.99', value: '19.99' },
-        { label: 'Medium - $21.99', value: '21.99' },
-        { label: 'Large - $23.99', value: '23.99' }
+        { label: 'MDM Classic T-Shirt - $19.99', value: '19.99' },
+        { label: 'MDM Fit Tee - $24.99', value: '24.99' }
       ],
       hoodie: [
-        { label: 'Medium - $39.99', value: '39.99' },
-        { label: 'Large - $44.99', value: '44.99' }
+        { label: 'MDM Pro Hoodie - $39.99', value: '39.99' },
+        { label: 'MDM Winter Hoodie - $44.99', value: '44.99' }
       ],
       shoes: [
-        { label: 'Size 9 - $59.99', value: '59.99' },
-        { label: 'Size 10 - $64.99', value: '64.99' }
+        { label: 'MDM Running Shoes Size 9 - $59.99', value: '59.99' },
+        { label: 'MDM Trainers Size 10 - $64.99', value: '64.99' }
       ],
       cap: [
-        { label: 'One Size - $14.99', value: '14.99' }
+        { label: 'MDM Flex Cap - $14.99', value: '14.99' },
+        { label: 'MDM Snapback - $18.99', value: '18.99' }
       ]
     };
 
     const productImages = {
-      tshirt: 'https://via.placeholder.com/300x200?text=T-Shirt',
-      hoodie: 'https://via.placeholder.com/300x200?text=Hoodie',
-      shoes: 'https://via.placeholder.com/300x200?text=Shoes',
-      cap: 'https://via.placeholder.com/300x200?text=Cap'
+      tshirt: 'https://i.imgur.com/VoeV2R9.jpg',
+      hoodie: 'https://i.imgur.com/VkAFTUv.jpg',
+      shoes: 'https://i.imgur.com/XvCvP1Q.jpg',
+      cap: 'https://i.imgur.com/LTqwr7h.jpg'
     };
+
+    let discountApplied = false;
+    let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
 
     function updateOptions() {
       const type = document.getElementById('productType').value;
@@ -244,10 +314,24 @@
       }
     }
 
+    function applyDiscount() {
+      const code = document.getElementById('discountCode').value.trim();
+      if (code === 'MDM10' && !discountApplied) {
+        discountApplied = true;
+        renderCart();
+        alert("Discount applied: 10% off!");
+      } else if (discountApplied) {
+        alert("Discount already applied.");
+      } else {
+        alert("Invalid code.");
+      }
+    }
+
     function renderCart() {
       const cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
       const cartItems = document.getElementById('cartItems');
       const cartTotal = document.getElementById('cartTotal');
+      const finalTotal = document.getElementById('finalTotal');
       cartItems.innerHTML = '';
       let total = 0;
 
@@ -269,11 +353,46 @@
       });
 
       cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+      if (discountApplied) {
+        const discounted = total * 0.9;
+        finalTotal.textContent = `Discounted Total: $${discounted.toFixed(2)}`;
+      } else {
+        finalTotal.textContent = '';
+      }
+    }
+
+    function buyNow() {
+      const method = document.getElementById('paymentMethod').value;
+      alert(`Thanks for your order! Payment method: ${method.toUpperCase()}`);
+      
+      // Save sales history
+      const cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
+      const sale = {
+        date: new Date().toLocaleString(),
+        cart
+      };
+      salesHistory.push(sale);
+      localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
+      renderCart();
+      renderSalesHistory();
+      localStorage.removeItem('mdmCart');
+    }
+
+    function renderSalesHistory() {
+      const salesHistoryList = document.getElementById('salesHistoryList');
+      salesHistoryList.innerHTML = '';
+      salesHistory.forEach(sale => {
+        const li = document.createElement('li');
+        li.textContent = `${sale.date} - Order of ${sale.cart.length} items`;
+        salesHistoryList.appendChild(li);
+      });
     }
 
     updateOptions();
     renderCart();
+    renderSalesHistory();
   </script>
 </body>
 </html>
+
       
