@@ -21,7 +21,7 @@
       margin: 0 auto;
     }
 
-    .product, .register, .cart, .sales-history, .about-us {
+    .product, .register, .cart, .sales-history, .about-us, .login, .forgot-password {
       background-color: #fff;
       padding: 20px;
       margin-bottom: 30px;
@@ -110,6 +110,10 @@
       margin-top: 40px;
       border-radius: 15px;
     }
+
+    .login, .forgot-password {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -119,19 +123,47 @@
          alt="MDM Sport Logo"
          style="display: block; margin: 20px auto; max-width: 300px; border-radius: 15px;" />
 
-    <!-- Registration Section -->
+    <!-- Personalized Welcome Section -->
+    <div id="welcomeMessage" class="welcome-message" style="text-align: center; display: none;">
+      <h2>Welcome, <span id="userName"></span>!</h2>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- User Registration Section -->
     <div class="register">
       <h2>Create Account</h2>
-      <input type="text" id="fullName" placeholder="Full Name" />
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
+      <input type="text" id="registerFullName" placeholder="Full Name" />
+      <input type="email" id="registerEmail" placeholder="Email" />
+      <input type="password" id="registerPassword" placeholder="Password" />
       <button onclick="registerUser()">Register</button>
+      <br />
+      <button onclick="showLoginForm()">Login</button>
+      <br />
+      <button onclick="showForgotPasswordForm()">Forgot Password?</button>
+    </div>
+
+    <!-- User Login Section -->
+    <div class="login">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="loginUser()">Login</button>
+      <br />
+      <button onclick="showRegisterForm()">Create Account</button>
+      <br />
+      <button onclick="showForgotPasswordForm()">Forgot Password?</button>
+    </div>
+
+    <!-- Forgot Password Section -->
+    <div class="forgot-password">
+      <h2>Forgot Password?</h2>
+      <input type="email" id="forgotEmail" placeholder="Enter your email" />
+      <button onclick="recoverPassword()">Recover Password</button>
     </div>
 
     <!-- Product Selection -->
     <div class="product">
       <h2>Select Your Product</h2>
-
       <label>Category:</label>
       <select id="category">
         <option value="men">Men 👨</option>
@@ -209,7 +241,6 @@
       <h2>About MDM Sport</h2>
       <p>MDM Sport is a top-quality sports apparel brand providing high-performance gear for athletes of all ages. We specialize in premium materials and stylish designs to help you achieve your best performance.</p>
     </div>
-
   </div>
 
   <script>
@@ -241,6 +272,8 @@
 
     let discountApplied = false;
     let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 
     function updateOptions() {
       const type = document.getElementById('productType').value;
@@ -257,18 +290,80 @@
     }
 
     function registerUser() {
-      const name = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const name = document.getElementById('registerFullName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
 
       if (name && email && password) {
+        users.push({ name, email, password });
+        localStorage.setItem('users', JSON.stringify(users));
         alert(`Welcome ${name}! Your account is created.`);
+        showLoginForm();
       } else {
         alert("Please fill out all fields.");
       }
     }
 
+    function loginUser() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      const user = users.find(user => user.email === email && user.password === password);
+      if (user) {
+        currentUser = user;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        alert(`Welcome back, ${user.name}!`);
+        showWelcomeMessage(user.name);
+        renderCart();
+      } else {
+        alert("Invalid email or password.");
+      }
+    }
+
+    function showLoginForm() {
+      document.querySelector('.register').style.display = 'none';
+      document.querySelector('.login').style.display = 'block';
+    }
+
+    function showRegisterForm() {
+      document.querySelector('.login').style.display = 'none';
+      document.querySelector('.register').style.display = 'block';
+    }
+
+    function showForgotPasswordForm() {
+      document.querySelector('.login').style.display = 'none';
+      document.querySelector('.forgot-password').style.display = 'block';
+    }
+
+    function recoverPassword() {
+      const email = document.getElementById('forgotEmail').value;
+      const user = users.find(user => user.email === email);
+      if (user) {
+        alert(`Password recovery link sent to ${email}`);
+        showLoginForm();
+      } else {
+        alert("Email not found.");
+      }
+    }
+
+    function showWelcomeMessage(name) {
+      document.querySelector('.welcome-message').style.display = 'block';
+      document.getElementById('userName').innerText = name;
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      alert("You have logged out.");
+      location.reload();
+    }
+
     function addToCart() {
+      if (!currentUser) {
+        alert("Please log in to add items to the cart.");
+        return;
+      }
+
       const product = document.getElementById('productType').value;
       const option = document.getElementById('productOption');
       const price = parseFloat(option.value);
@@ -362,35 +457,31 @@
     }
 
     function buyNow() {
-      const method = document.getElementById('paymentMethod').value;
-      alert(`Thanks for your order! Payment method: ${method.toUpperCase()}`);
-      
-      // Save sales history
-      const cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
-      const sale = {
-        date: new Date().toLocaleString(),
-        cart
-      };
-      salesHistory.push(sale);
+      alert("Payment successful! Thank you for shopping with MDM Sport!");
+      let cart = JSON.parse(localStorage.getItem('mdmCart')) || [];
+      cart.forEach(item => {
+        salesHistory.push(item);
+      });
       localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
-      renderCart();
-      renderSalesHistory();
       localStorage.removeItem('mdmCart');
+      renderCart();
+      location.reload();
     }
 
-    function renderSalesHistory() {
+    function updateSalesHistory() {
       const salesHistoryList = document.getElementById('salesHistoryList');
       salesHistoryList.innerHTML = '';
-      salesHistory.forEach(sale => {
+      salesHistory.forEach(item => {
         const li = document.createElement('li');
-        li.textContent = `${sale.date} - Order of ${sale.cart.length} items`;
+        li.textContent = `${item.label} - $${item.price.toFixed(2)} (Quantity: ${item.quantity})`;
         salesHistoryList.appendChild(li);
       });
     }
 
+    // Initialize the page
     updateOptions();
     renderCart();
-    renderSalesHistory();
+    updateSalesHistory();
   </script>
 </body>
 </html>
