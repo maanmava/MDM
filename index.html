@@ -482,6 +482,12 @@
     updateOptions();
     renderCart();
     updateSalesHistory();
+
+    document.addEventListener("DOMContentLoaded", function () {
+    updateOptions();       // Correctly loads the product options and sets the image
+    renderCart();          // Load any saved cart
+    updateSalesHistory();  // Load previous purchases
+  });
   </script>
 </body>
 </html>
