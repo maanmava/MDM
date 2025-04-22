@@ -2,57 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDM Sport Store</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
-    .product {
-      max-width: 300px;
-      margin: auto;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-    }
-    #paypal-button-container {
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <main class="container">
+    <header>
+      <h1>Welcome to MDM Sport Store</h1>
+    </header>
 
-  <h1>Welcome to MDM Sport Store</h1>
+    <!-- Product Section -->
+    <section class="product">
+      <h2>Featured Product</h2>
+      <img src="images/product1.jpg" alt="Featured product image" />
+      <p>Discover our top-selling sports equipment now available!</p>
+    </section>
 
-  <div class="product">
-    <h2>MDM Sport T-Shirt</h2>
-    <p><strong>Price:</strong> $19.99</p>
-    <div id="paypal-button-container"></div>
-  </div>
+    <!-- Register Section -->
+    <section class="register">
+      <h2>Register</h2>
+      <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" />
 
-  <!-- Load the PayPal JS SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" />
 
-  <script>
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: '19.99'
-            }
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          alert('Transaction completed by ' + details.payer.name.given_name + '!');
-        });
-      }
-    }).render('#paypal-button-container');
-  </script>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" />
 
+        <button type="submit">Sign Up</button>
+      </form>
+    </section>
+
+    <!-- Cart Section -->
+    <section class="cart">
+      <h2>Your Cart</h2>
+      <div class="cart-item">
+        <p>Item name - $XX.XX</p>
+      </div>
+    </section>
+
+    <!-- Sales History Section -->
+    <section class="sales-history">
+      <h2>Sales History</h2>
+      <p>You have no previous purchases.</p>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about-us">
+      <h2>About Us</h2>
+      <p>MDM Sport Store is your trusted partner for premium sports gear and accessories.</p>
+    </section>
+
+    <!-- Login Section -->
+    <section class="login">
+      <h2>Login</h2>
+      <form>
+        <label for="login-email">Email:</label>
+        <input type="email" id="login-email" name="login-email" />
+
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" name="login-password" />
+
+        <button type="submit">Login</button>
+      </form>
+    </section>
+
+    <!-- Forgot Password Section -->
+    <section class="forgot-password">
+      <h2>Forgot Password</h2>
+      <form>
+        <label for="reset-email">Email:</label>
+        <input type="email" id="reset-email" name="reset-email" />
+        <button type="submit">Reset Password</button>
+      </form>
+    </section>
+  </main>
 </body>
-</html> 
+</html>
